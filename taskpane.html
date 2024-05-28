@@ -27,7 +27,6 @@
      * Writes 'Hello world!' to a new message body.
      */
     function sayHello() {
-        console.log('testing');
         Office.context.mailbox.item.body.setAsync(
             "Hello world!",
             {
@@ -40,6 +39,8 @@
                     Office.AsyncResultStatus.Failed) {
                     write(asyncResult.error.message);
                 }
+
+                window.open('https://www.google.com', "_blank");
             }
         );
     }
