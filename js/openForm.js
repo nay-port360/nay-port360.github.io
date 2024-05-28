@@ -5,26 +5,8 @@ Office.onReady((info) => {
 });
 
 function openForm(event) {
-  const item = Office.context.mailbox.item;
-
-  // Get the email received date and time
-  const receivedDateTime = item.dateTimeCreated;
-
-  // Create a form URL with the received date and time as a query parameter
-  const formUrl = `https://p360.test/operations/enquiries/create?receivedDateTime=${encodeURIComponent(receivedDateTime)}`;
-
-  // Open the form URL in a dialog
-  Office.context.ui.displayDialogAsync(formUrl, { height: 50, width: 50 }, function (result) {
-    if (result.status === Office.AsyncResultStatus.Failed) {
-      console.error('Failed to open the dialog:', result.error.message);
-    }
-  });
+  console.log('testing');
 
   // Complete the event
   event.completed();
-}
-
-// Ensure to export the openForm function
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports.openForm = openForm;
 }
