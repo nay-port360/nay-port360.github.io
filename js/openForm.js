@@ -23,3 +23,8 @@ function openForm(event) {
   // Complete the event
   event.completed();
 }
+
+// Ensure to export the openForm function
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports.openForm = openForm;
+}
