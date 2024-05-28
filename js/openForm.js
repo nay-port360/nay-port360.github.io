@@ -13,8 +13,12 @@ function openForm(event) {
   // Create a form URL with the received date and time as a query parameter
   const formUrl = `https://p360.test/operations/enquiries/create?receivedDateTime=${encodeURIComponent(receivedDateTime)}`;
 
-  // Redirect to the form URL
-  window.open(formUrl, "_blank");
+  // Open the form URL in a dialog
+  Office.context.ui.displayDialogAsync(formUrl, { height: 50, width: 50 }, function (result) {
+    if (result.status === Office.AsyncResultStatus.Failed) {
+      console.error('Failed to open the dialog:', result.error.message);
+    }
+  });
 
   // Complete the event
   event.completed();
