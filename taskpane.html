@@ -34,7 +34,7 @@
 
         // Get email details
         const subject = item.subject;
-        const receivedDate = item.dateTimeReceived;
+        const receivedDate = item.dateTimeCreated;
 
         // post request
         console.log('post request starting...');
@@ -43,6 +43,7 @@
 
         const formData = new FormData();
         formData.append('subject', subject);
+        formData.append('receivedDate', receivedDate);
 
         // Post form data to your website
         fetch('https://p360.test/api/upload-tmp-file', {
