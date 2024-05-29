@@ -36,43 +36,31 @@
         const subject = item.subject;
         const receivedDate = item.dateTimeReceived;
 
-        // Get the email content (as a file)
-        item.getAttachmentContentAsync(item.attachments[0].id, (result) => {
-            if (result.status === Office.AsyncResultStatus.Succeeded) {
-                console.log('post request');
+        // post request
+        console.log('post request starting...');
+        const url = 'https://p360.test/api/upload-tmp-file';
+        const token = '1|kbGb8dscgSHVKOjSVtnmgHaXhwsffjQiUTfYHj1k';
 
-                const url = 'https://p360.test/api/upload-tmp-file';
-                const token = '1|kbGb8dscgSHVKOjSVtnmgHaXhwsffjQiUTfYHj1k';
+        const formData = new FormData();
+        formData.append('receivedDate', receivedDate);
 
+        // Post form data to your website
+        fetch('https://p360.test/api/upload-tmp-file', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('post request success');
+            console.log(data);
 
-                const attachment = result.value;
-
-                // Prepare form data
-                const formData = new FormData();
-                //formData.append('file', new Blob([attachment.content], { type: attachment.format }), `${subject}.eml`);
-                formData.append('receivedDate', receivedDate);
-
-                // Post form data to your website
-                fetch('https://p360.test/api/upload-tmp-file', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('post request success');
-                    console.log(data);
-
-                    // Redirect to your form page
-                    window.open(`http://p360.test/operations/enquiries/create?receivedDate=${encodeURIComponent(receivedDate)}`, '_blank');
-                })
-                .catch(error => console.error('Error uploading email:', error));
-            } else {
-                console.error('Error getting attachment content:', result.error);
-            }
-        });
+            // Redirect to your form page
+            window.open(`http://p360.test/operations/enquiries/create?receivedDate=${encodeURIComponent(receivedDate)}`, '_blank');
+        })
+        .catch(error => console.error('Error uploading email:', error));
 
         console.log('ending add in...');
 
