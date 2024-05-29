@@ -27,8 +27,21 @@
      * Writes 'Hello world!' to a new message body.
      */
     function sayHello() {
-        console.log('testing add in');
+        console.log('initiating add in');
+
+        // Get the current message
+        const item = Office.context.mailbox.item;
+
+        // Get email details
+        const subject = item.subject;
+        const receivedDate = item.dateTimeReceived;
+
+        console.log(subject);
+
+        console.log('stopping add in');
         window.open('https://www.google.com', "_blank");
+
+
         // Office.context.mailbox.item.body.setAsync(
         //     "Hello world!",
         //     {
