@@ -37,7 +37,7 @@
         const receivedDate = item.dateTimeReceived;
 
         // Get the email content (as a file)
-        item.getAttachmentContentAsync((result) => {
+        item.getAttachmentContentAsync(item.attachments[0].id, (result) => {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
                 console.log('post request');
 
