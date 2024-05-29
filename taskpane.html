@@ -36,12 +36,41 @@
         const subject = item.subject;
         const receivedDate = item.dateTimeReceived;
 
-        let siteUrl = 'http://p360.test/operations/enquiries/create?subject=' + subject;
+        // Get the email content (as a file)
+        item.getAttachmentContentAsync((result) => {
+            if (result.status === Office.AsyncResultStatus.Succeeded) {
+                console.log('post request');
+                // const attachment = result.value;
 
-        console.log(subject);
+                // // Prepare form data
+                // const formData = new FormData();
+                // formData.append('file', new Blob([attachment.content], { type: attachment.format }), `${subject}.eml`);
+                // formData.append('receivedDate', receivedDate);
 
-        console.log('stopping add in...');
-        window.open(siteUrl, "_blank");
+                // // Post form data to your website
+                // fetch('https://yourwebsite.com/your-form-endpoint', {
+                //     method: 'POST',
+                //     body: formData,
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     // Redirect to your form page
+                //     window.open(`https://yourwebsite.com/form-page?receivedDate=${encodeURIComponent(receivedDate)}`, '_blank');
+                // })
+                // .catch(error => console.error('Error uploading email:', error));
+            } else {
+                console.error('Error getting attachment content:', result.error);
+            }
+        });
+
+        console.log('ending add in...');
+
+        // let siteUrl = 'http://p360.test/operations/enquiries/create?subject=' + subject;
+
+        // console.log(subject);
+
+        // console.log('stopping add in...');
+        // window.open(siteUrl, "_blank");
 
 
         // Office.context.mailbox.item.body.setAsync(
