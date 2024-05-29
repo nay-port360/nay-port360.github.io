@@ -27,7 +27,7 @@
      * Writes 'Hello world!' to a new message body.
      */
     function sayHello() {
-        console.log('initiating add in');
+        console.log('initiating add in...');
 
         // Get the current message
         const item = Office.context.mailbox.item;
@@ -36,10 +36,12 @@
         const subject = item.subject;
         const receivedDate = item.dateTimeReceived;
 
+        let siteUrl = 'http://p360.test/operations/enquiries/create?subject=' + subject;
+
         console.log(subject);
 
-        console.log('stopping add in');
-        window.open('https://www.google.com', "_blank");
+        console.log('stopping add in...');
+        window.open(siteUrl, "_blank");
 
 
         // Office.context.mailbox.item.body.setAsync(
