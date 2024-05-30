@@ -19,7 +19,7 @@
 
     Office.onReady((info) => {
         if (info.host === Office.HostType.Outlook) {
-            document.getElementById("helloButton").onclick = sayHello;
+            document.getElementById("helloButton").onclick = testingApi;
         }
     });
 
@@ -92,6 +92,22 @@
         //         window.open('https://www.google.com', "_blank");
         //     }
         // );
+    }
+
+    function testingApi() {
+        var item = Office.context.mailbox.item;
+
+        if (item && item.getAsFileAsync) {
+            item.getAsFileAsync(function (result) {
+                if (result.status === Office.AsyncResultStatus.Succeeded) {
+                    console.log("File retrieval successful:", result.value);
+                } else {
+                    console.error("Error:", result.error.message);
+                }
+            });
+        } else {
+            console.error("The operation is not supported for this item type or environment.");
+        }
     }
 
 </script>
