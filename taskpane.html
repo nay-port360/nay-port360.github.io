@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 6</button>
+	<button id="createEnquiry">create Enquiry 7</button>
 </body>
 
 <script>
@@ -37,14 +37,45 @@
 		// 	}
 		// });
 
-		item.getAsFileAsync(function (result) {
-			if (result.status === Office.AsyncResultStatus.Succeeded) {
-				const emailFile = result.value;
-				const emailBlob = new Blob([emailFile], { type: 'application/vnd.ms-outlook' });
-				uploadFileToEndpoint(emailBlob, 'email.msg');
+		// working with invalid file
+		// item.getAsFileAsync(function (result) {
+		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
+		// 		const emailFile = result.value;
+		// 		const emailBlob = new Blob([emailFile], { type: 'application/vnd.ms-outlook' });
+		// 		uploadFileToEndpoint(emailBlob, 'email.msg');
 				
+		// 	} else {
+		// 		console.error("Error getting email as file:", result.error.message);
+		// 	}
+		// });
+
+		item.getAsFileAsync(function (result) {
+		    if (result.status === Office.AsyncResultStatus.Succeeded) {
+				const emailFile = result.value;
+				readFileContent(emailFile, function(content) {
+					const blob = new Blob([content], { type: 'application/vnd.ms-outlook' });
+					uploadFileToEndpoint(blob, 'email.msg');
+				});
+		    } else {
+		      	console.error("Error getting email as file:", result.error.message);
+		    }
+	  	});
+	}
+
+	function readFileContent(file, callback) {
+		const reader = new FileReader();
+		reader.onload = function(event) {
+			callback(event.target.result);
+		};
+		reader.onerror = function(error) {
+			console.error("Error reading file content:", error);
+		};
+
+		file.getSliceAsync(0, file.size, function(result) {
+			if (result.status === Office.AsyncResultStatus.Succeeded) {
+			  	reader.readAsArrayBuffer(result.value.data);
 			} else {
-				console.error("Error getting email as file:", result.error.message);
+			  	console.error("Error getting file slice:", result.error.message);
 			}
 		});
 	}
