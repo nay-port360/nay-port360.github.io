@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 4</button>
+	<button id="createEnquiry">create Enquiry 5</button>
 </body>
 
 <script>
@@ -40,15 +40,13 @@
 		item.getAsFileAsync(function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
 				const emailFile = result.value;
-				const reader = new FileReader();
 
-				reader.onload = function () {
-					const arrayBuffer = reader.result;
-					const blob = new Blob([arrayBuffer], { type: 'application/vnd.ms-outlook' });
+				emailFile.slice(0, emailFile.size).arrayBuffer().then(buffer => {
+					const blob = new Blob([buffer], { type: 'application/vnd.ms-outlook' });
 					uploadFileToEndpoint(blob, 'email.msg');
-				};
-
-				reader.readAsArrayBuffer(emailFile);
+				}).catch(error => {
+					console.error('Error reading email file:', error);
+				});
 			} else {
 				console.error("Error getting email as file:", result.error.message);
 			}
