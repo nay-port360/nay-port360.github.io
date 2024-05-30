@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 13</button>
+	<button id="createEnquiry">create Enquiry 14</button>
 </body>
 
 <script>
@@ -38,26 +38,54 @@
 		// });
 
 		// working with invalid file
-		item.getAsFileAsync(function (result) {
+		// item.getAsFileAsync(function (result) {
+		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
+		// 		const emailFile = result.value;
+		// 		//const emailBlob = new Blob([emailFile.content], { type: emailFile.format });
+
+		// 		// Check the type and content length for debugging
+		//         console.log('Email file format:', emailFile.format);
+		//         console.log('Email file size:', emailFile.content.length);
+
+		// 		try {
+		//             const emailBlob = new Blob([new Uint8Array(emailFile.content)], { type: 'message/rfc822' });
+		            
+		//             // Verify the Blob creation
+		//             console.log('Blob size:', emailBlob.size);
+
+		//             uploadFileToEndpoint(emailBlob, 'email.eml');
+		//         } catch (error) {
+		//             console.error('Error creating Blob:', error);
+		//         }
+				
+		// 	} else {
+		// 		console.error("Error getting email as file:", result.error.message);
+		// 	}
+		// });
+
+		item.getAsFileAsync(Office.CoercionType.EML, function(result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
 				const emailFile = result.value;
-				//const emailBlob = new Blob([emailFile.content], { type: emailFile.format });
 
-				// Check the type and content length for debugging
-		        console.log('Email file format:', emailFile.format);
-		        console.log('Email file size:', emailFile.content.length);
+				// Log the email file properties for debugging
+				console.log('Email file properties:', emailFile);
 
 				try {
-		            const emailBlob = new Blob([new Uint8Array(emailFile.content)], { type: 'message/rfc822' });
-		            
-		            // Verify the Blob creation
-		            console.log('Blob size:', emailBlob.size);
+					// Check if the emailFile has necessary properties
+					if (emailFile && emailFile.content) {
+						// Create a Blob using the content
+						const emailBlob = new Blob([emailFile.content], { type: 'message/rfc822' });
 
-		            uploadFileToEndpoint(emailBlob, 'email.eml');
-		        } catch (error) {
-		            console.error('Error creating Blob:', error);
-		        }
-				
+						// Verify the Blob creation
+						console.log('Blob size:', emailBlob.size);
+
+						uploadFileToEndpoint(emailBlob, 'email.eml');
+					} else {
+						console.error('Email file content is missing');
+					}
+				} catch (error) {
+					console.error('Error creating Blob:', error);
+				}
 			} else {
 				console.error("Error getting email as file:", result.error.message);
 			}
