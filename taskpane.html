@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 15</button>
+	<button id="createEnquiry">create Enquiry 16</button>
 </body>
 
 <script>
@@ -18,14 +18,15 @@
     function createEnquiry() {
 		const item = Office.context.mailbox.item;
 
-		// item.getAsFileAsync(Office.CoercionType.Ooxml, function (result) {
-		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
-		// 		const emailFile = result.value;
-		// 		uploadFileToEndpoint(emailFile);
-		// 	} else {
-		// 	  	console.error("Error getting email as file:", result.error.message);
-		// 	}
-		// });
+		item.getAsFileAsync(Office.CoercionType.Ooxml, function (result) {
+			if (result.status === Office.AsyncResultStatus.Succeeded) {
+				console.log('success');
+				// const emailFile = result.value;
+				// uploadFileToEndpoint(emailFile);
+			} else {
+			  	console.error("Error getting email as file:", result.error.message);
+			}
+		});
 
 		// item.body.getAsync(Office.CoercionType.Html, function (result) {
 		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
@@ -91,29 +92,29 @@
 		// 	}
 		// });
 
-		item.getCallbackTokenAsync({ isRest: true }, function (result) {
-			if (result.status === Office.AsyncResultStatus.Succeeded) {
-				const token = result.value;
-				const itemId = item.itemId;
+		// item.getCallbackTokenAsync({ isRest: true }, function (result) {
+		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
+		// 		const token = result.value;
+		// 		const itemId = item.itemId;
 
-				fetch(`https://outlook.office.com/api/v2.0/me/messages/${itemId}`, {
-					headers: {
-						'Authorization': `Bearer ${token}`,
-						'Accept': 'application/json; odata.metadata=none'
-					}
-				})
-				.then(response => response.json())
-				.then(email => {
-					const emailBlob = new Blob([JSON.stringify(email)], { type: 'message/rfc822' });
-					uploadFileToEndpoint(emailBlob, 'email.eml');
-				})
-				.catch(error => {
-					console.error('Error fetching email content:', error);
-				});
-			} else {
-				console.error("Error getting callback token:", result.error.message);
-			}
-		});
+		// 		fetch(`https://outlook.office.com/api/v2.0/me/messages/${itemId}`, {
+		// 			headers: {
+		// 				'Authorization': `Bearer ${token}`,
+		// 				'Accept': 'application/json; odata.metadata=none'
+		// 			}
+		// 		})
+		// 		.then(response => response.json())
+		// 		.then(email => {
+		// 			const emailBlob = new Blob([JSON.stringify(email)], { type: 'message/rfc822' });
+		// 			uploadFileToEndpoint(emailBlob, 'email.eml');
+		// 		})
+		// 		.catch(error => {
+		// 			console.error('Error fetching email content:', error);
+		// 		});
+		// 	} else {
+		// 		console.error("Error getting callback token:", result.error.message);
+		// 	}
+		// });
 	}
 
 	function uploadFileToEndpoint(file, filename) {
