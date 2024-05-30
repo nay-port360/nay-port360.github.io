@@ -1,0 +1,168 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+
+<body>
+    <p>This add-in will insert the text 'Hello world!' in a new message.</p>
+    <button id="helloButton">Create Enquiry</button>
+
+    <!-- The following image URL tracks diagnostic data for this sample add-in. Please remove the image tag if you reuse this sample in your own code project. -->
+    <img src="https://pnptelemetry.azurewebsites.net/pnp-officeaddins/samples/outlook-add-in-hello-world-run" />
+</body>
+
+<script>
+
+    Office.onReady((info) => {
+        if (info.host === Office.HostType.Outlook) {
+            document.getElementById("helloButton").onclick = testingApi;
+        }
+    });
+
+    /**
+     * Writes 'Hello world!' to a new message body.
+     */
+    function sayHello() {
+        console.log('initiating add innnnnn...');
+
+        // Get the current message
+        const item = Office.context.mailbox.item;
+
+        // Get email details
+        const subject = item.subject;
+        const receivedDate = item.dateTimeCreated;
+
+        // post request
+        console.log('post request starting...');
+        const url = 'https://p360.test/api/upload-tmp-file';
+        const token = '1|kbGb8dscgSHVKOjSVtnmgHaXhwsffjQiUTfYHj1k';
+
+        const formData = new FormData();
+        formData.append('subject', subject);
+        formData.append('receivedDate', receivedDate);
+
+        // Post form data to your website
+        fetch('https://p360.test/api/upload-tmp-file', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('post request success');
+            console.log(data);
+
+            // Redirect to your form page
+            window.open(`http://p360.test/operations/enquiries/create?receivedDate=${encodeURIComponent(receivedDate)}`, '_blank');
+        })
+        .catch(error => console.error('Error uploading email:', error));
+
+        console.log('ending add in...');
+
+        // let siteUrl = 'http://p360.test/operations/enquiries/create?subject=' + subject;
+
+        // console.log(subject);
+
+        // console.log('stopping add in...');
+        // window.open(siteUrl, "_blank");
+
+
+        // Office.context.mailbox.item.body.setAsync(
+        //     "Hello world!",
+        //     {
+        //         coercionType: "html", // Write text as HTML
+        //     },
+
+        //     // Callback method to check that setAsync succeeded
+        //     function (asyncResult) {
+
+        //         console.log('success add in');
+
+        //         if (asyncResult.status ==
+        //             Office.AsyncResultStatus.Failed) {
+        //             write(asyncResult.error.message);
+        //         }
+
+        //         window.open('https://www.google.com', "_blank");
+        //     }
+        // );
+    }
+
+    function testingApi() {
+        const url = "https://p360.test/api/upload-tmp-file";
+        const token = "4|SMV55jMAKXni9oVKrV1w03g4sCT3anr7pW7OBe24";
+
+        const item = Office.context.mailbox.item;
+        const subject = item.subject;
+        const receivedDate = item.dateTimeCreated;
+
+        if (item && item.getAsFileAsync) {
+            item.getAsFileAsync(function (result) {
+                if (result.status === Office.AsyncResultStatus.Succeeded) {
+                    console.log('Email content retrieved successfully');
+
+                    const file = result.value;
+                    //const blob = base64ToBlob(file.content, file.format);
+
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('file', new Blob([file.content], { type: file.format }), `${subject}.eml`);
+                    //formData.append('file', blob, `${subject}.eml`);
+                    formData.append('receivedDate', receivedDate);
+
+                    // Post form data to p360
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: formData,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Post request success');
+                        console.log(data);
+
+                        // Redirect to your form page
+                        window.open(`https://p360.test/operations/enquiries/create?receivedDate=${encodeURIComponent(receivedDate)}`, '_blank');
+                    })
+                    .catch(error => console.error('Error uploading email:', error));
+
+                } else {
+                    console.error("Error:", result.error.message);
+                }
+            });
+        } else {
+            console.error("The operation is not supported for this item type or environment.");
+        }
+    }
+
+    // Function to convert base64 string to a Blob
+    // function base64ToBlob(base64, contentType) {
+    //     const byteCharacters = atob(base64);
+    //     const byteArrays = [];
+
+    //     for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    //         const slice = byteCharacters.slice(offset, offset + 512);
+
+    //         const byteNumbers = new Array(slice.length);
+    //         for (let i = 0; i < slice.length; i++) {
+    //             byteNumbers[i] = slice.charCodeAt(i);
+    //         }
+
+    //         const byteArray = new Uint8Array(byteNumbers);
+    //         byteArrays.push(byteArray);
+    //     }
+
+    //     return new Blob(byteArrays, { type: contentType });
+    // }
+
+</script>
+
+</html>
