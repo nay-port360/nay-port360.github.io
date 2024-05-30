@@ -18,22 +18,32 @@
     function createEnquiry() {
 		const item = Office.context.mailbox.item;
 
-		item.getAsFileAsync(Office.CoercionType.Ooxml, function (result) {
+		// item.getAsFileAsync(Office.CoercionType.Ooxml, function (result) {
+		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
+		// 		const emailFile = result.value;
+		// 		uploadFileToEndpoint(emailFile);
+		// 	} else {
+		// 	  	console.error("Error getting email as file:", result.error.message);
+		// 	}
+		// });
+
+		item.body.getAsync(Office.CoercionType.Text, function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
-				const emailFile = result.value;
-				uploadFileToEndpoint(emailFile);
+				const emailText = result.value;
+				const emailBlob = new Blob([emailText], { type: 'text/plain' });
+				uploadFileToEndpoint(emailBlob, 'email.txt');
 			} else {
-			  	console.error("Error getting email as file:", result.error.message);
+				console.error("Error getting email body:", result.error.message);
 			}
 		});
 	}
 
-	function uploadFileToEndpoint(file) {
+	function uploadFileToEndpoint(file, filename) {
 		const endpointUrl = 'https://p360.test/api/upload-tmp-file';
 		const token = '4|SMV55jMAKXni9oVKrV1w03g4sCT3anr7pW7OBe24';
 
 		const formData = new FormData();
-		formData.append('file', file);
+		formData.append('file', file, filename);
 
 		fetch(endpointUrl, {
 			method: 'POST',
