@@ -27,11 +27,11 @@
 		// 	}
 		// });
 
-		item.body.getAsync(Office.CoercionType.Text, function (result) {
+		item.body.getAsync(Office.CoercionType.Html, function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
-				const emailText = result.value;
-				const emailBlob = new Blob([emailText], { type: 'text/plain' });
-				uploadFileToEndpoint(emailBlob, 'email.txt');
+				const emailHtml = result.value;
+				const emailBlob = new Blob([emailHtml], { type: 'text/html' });
+				uploadFileToEndpoint(emailBlob, 'email.html');
 			} else {
 				console.error("Error getting email body:", result.error.message);
 			}
