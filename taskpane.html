@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 10</button>
+	<button id="createEnquiry">create Enquiry 11</button>
 </body>
 
 <script>
@@ -41,7 +41,7 @@
 		item.getAsFileAsync(function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
 				const emailFile = result.value;
-				const emailBlob = new Blob([emailFile], { type: emailFile.format });
+				const emailBlob = new Blob([emailFile.content], { type: emailFile.format });
 				uploadFileToEndpoint(emailBlob, 'email.eml');
 				
 			} else {
