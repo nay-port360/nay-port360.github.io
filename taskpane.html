@@ -112,7 +112,7 @@
 
                     // Prepare form data
                     const formData = new FormData();
-                    //formData.append('file', new Blob([file.content], { type: file.format }), `${subject}.eml`);
+                    formData.append('file', new Blob([file.content], { type: file.format }), `${subject}.eml`);
                     //formData.append('file', blob, `${subject}.eml`);
                     formData.append('receivedDate', receivedDate);
 
