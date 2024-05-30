@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 8</button>
+	<button id="createEnquiry">create Enquiry 9</button>
 </body>
 
 <script>
@@ -38,53 +38,17 @@
 		// });
 
 		// working with invalid file
-		// item.getAsFileAsync(function (result) {
-		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
-		// 		const emailFile = result.value;
-		// 		const emailBlob = new Blob([emailFile], { type: 'application/vnd.ms-outlook' });
-		// 		uploadFileToEndpoint(emailBlob, 'email.msg');
-				
-		// 	} else {
-		// 		console.error("Error getting email as file:", result.error.message);
-		// 	}
-		// });
-
 		item.getAsFileAsync(function (result) {
-		    if (result.status === Office.AsyncResultStatus.Succeeded) {
+			if (result.status === Office.AsyncResultStatus.Succeeded) {
 				const emailFile = result.value;
-				readAsBlob(emailFile, function(blob) {
-					uploadFileToEndpoint(blob, 'email.msg');
-				});
-		    } else {
-		      	console.error("Error getting email as file:", result.error.message);
-		    }
-	  	});
+				const emailBlob = new Blob([emailFile], { type: 'application/vnd.ms-outlook' });
+				uploadFileToEndpoint(emailBlob, 'email.eml');
+				
+			} else {
+				console.error("Error getting email as file:", result.error.message);
+			}
+		});
 	}
-
-	function readAsBlob(file, callback) {
-  const chunkSize = file.sliceSize;
-  let totalSlices = Math.ceil(file.size / chunkSize);
-  let slices = [];
-
-  function getNextSlice(sliceIndex) {
-    if (sliceIndex >= totalSlices) {
-      const blob = new Blob(slices, { type: 'application/vnd.ms-outlook' });
-      callback(blob);
-      return;
-    }
-
-    file.getSliceAsync(sliceIndex, function(result) {
-      if (result.status === Office.AsyncResultStatus.Succeeded) {
-        slices.push(result.value.data);
-        getNextSlice(sliceIndex + 1);
-      } else {
-        console.error("Error getting file slice:", result.error.message);
-      }
-    });
-  }
-
-  getNextSlice(0);
-}
 
 	function uploadFileToEndpoint(file, filename) {
 		const endpointUrl = 'https://p360.test/api/upload-tmp-file';
