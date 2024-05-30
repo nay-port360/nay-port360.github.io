@@ -108,11 +108,12 @@
                     console.log('Email content retrieved successfully');
 
                     const file = result.value;
-                    const blob = base64ToBlob(file.content, file.format);
+                    //const blob = base64ToBlob(file.content, file.format);
 
                     // Prepare form data
                     const formData = new FormData();
-                    formData.append('file', blob, `${subject}.eml`);
+                    formData.append('file', new Blob([file.content], { type: file.format }), `${subject}.eml`);
+                    //formData.append('file', blob, `${subject}.eml`);
                     formData.append('receivedDate', receivedDate);
 
                     // Post form data to p360
