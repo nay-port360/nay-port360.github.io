@@ -40,13 +40,9 @@
 		item.getAsFileAsync(function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
 				const emailFile = result.value;
-
-				emailFile.slice(0, emailFile.size).arrayBuffer().then(buffer => {
-					const blob = new Blob([buffer], { type: 'application/vnd.ms-outlook' });
-					uploadFileToEndpoint(blob, 'email.msg');
-				}).catch(error => {
-					console.error('Error reading email file:', error);
-				});
+				const emailBlob = new Blob([emailFile], { type: 'application/vnd.ms-outlook' });
+				uploadFileToEndpoint(emailBlob, 'email.msg');
+				
 			} else {
 				console.error("Error getting email as file:", result.error.message);
 			}
