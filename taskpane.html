@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 1</button>
+	<button id="createEnquiry">create Enquiry 2</button>
 </body>
 
 <script>
@@ -27,28 +27,37 @@
 		// 	}
 		// });
 
-		item.body.getAsync(Office.CoercionType.Html, function (result) {
+		// item.body.getAsync(Office.CoercionType.Html, function (result) {
+		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
+		// 		const emailHtml = result.value;
+		// 		const emailBlob = new Blob([emailHtml], { type: 'text/html' });
+		// 		uploadFileToEndpoint(emailBlob, 'email.html');
+		// 	} else {
+		// 		console.error("Error getting email body:", result.error.message);
+		// 	}
+		// });
+
+		item.getAsFileAsync(Office.CoercionType.File, function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
-				const emailHtml = result.value;
-				const emailBlob = new Blob([emailHtml], { type: 'text/html' });
-				uploadFileToEndpoint(emailBlob, 'email.html');
+				const emailFile = result.value;
+				uploadFileToEndpoint(emailFile);
 			} else {
-				console.error("Error getting email body:", result.error.message);
+				console.error("Error getting email as file:", result.error.message);
 			}
 		});
 	}
 
-	function uploadFileToEndpoint(file, filename) {
+	function uploadFileToEndpoint(file) {
 		const endpointUrl = 'https://p360.test/api/upload-tmp-file';
 		const token = '4|SMV55jMAKXni9oVKrV1w03g4sCT3anr7pW7OBe24';
 
 		const formData = new FormData();
-		formData.append('file', file, filename);
+		formData.append('file', file, 'email.msg');
 
 		fetch(endpointUrl, {
 			method: 'POST',
 			headers: {
-			'Authorization': `Bearer ${token}`
+				'Authorization': `Bearer ${token}`
 			},
 			body: formData
 		})
@@ -60,5 +69,28 @@
 			console.error('Error:', error);
 		});
 	}
+
+	// function uploadFileToEndpoint(file, filename) {
+	// 	const endpointUrl = 'https://p360.test/api/upload-tmp-file';
+	// 	const token = '4|SMV55jMAKXni9oVKrV1w03g4sCT3anr7pW7OBe24';
+
+	// 	const formData = new FormData();
+	// 	formData.append('file', file, filename);
+
+	// 	fetch(endpointUrl, {
+	// 		method: 'POST',
+	// 		headers: {
+	// 		'Authorization': `Bearer ${token}`
+	// 		},
+	// 		body: formData
+	// 	})
+	// 	.then(response => response.json())
+	// 	.then(data => {
+	// 		console.log('Success:', data);
+	// 	})
+	// 	.catch((error) => {
+	// 		console.error('Error:', error);
+	// 	});
+	// }
 </script>
 </html>
