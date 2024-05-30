@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 14</button>
+	<button id="createEnquiry">create Enquiry 15</button>
 </body>
 
 <script>
@@ -63,31 +63,55 @@
 		// 	}
 		// });
 
-		item.getAsFileAsync(Office.CoercionType.EML, function(result) {
+		// item.getAsFileAsync(Office.CoercionType.EML, function(result) {
+		// 	if (result.status === Office.AsyncResultStatus.Succeeded) {
+		// 		const emailFile = result.value;
+
+		// 		// Log the email file properties for debugging
+		// 		console.log('Email file properties:', emailFile);
+
+		// 		try {
+		// 			// Check if the emailFile has necessary properties
+		// 			if (emailFile && emailFile.content) {
+		// 				// Create a Blob using the content
+		// 				const emailBlob = new Blob([emailFile.content], { type: 'message/rfc822' });
+
+		// 				// Verify the Blob creation
+		// 				console.log('Blob size:', emailBlob.size);
+
+		// 				uploadFileToEndpoint(emailBlob, 'email.eml');
+		// 			} else {
+		// 				console.error('Email file content is missing');
+		// 			}
+		// 		} catch (error) {
+		// 			console.error('Error creating Blob:', error);
+		// 		}
+		// 	} else {
+		// 		console.error("Error getting email as file:", result.error.message);
+		// 	}
+		// });
+
+		item.getCallbackTokenAsync({ isRest: true }, function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
-				const emailFile = result.value;
+				const token = result.value;
+				const itemId = item.itemId;
 
-				// Log the email file properties for debugging
-				console.log('Email file properties:', emailFile);
-
-				try {
-					// Check if the emailFile has necessary properties
-					if (emailFile && emailFile.content) {
-						// Create a Blob using the content
-						const emailBlob = new Blob([emailFile.content], { type: 'message/rfc822' });
-
-						// Verify the Blob creation
-						console.log('Blob size:', emailBlob.size);
-
-						uploadFileToEndpoint(emailBlob, 'email.eml');
-					} else {
-						console.error('Email file content is missing');
+				fetch(`https://outlook.office.com/api/v2.0/me/messages/${itemId}`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Accept': 'application/json; odata.metadata=none'
 					}
-				} catch (error) {
-					console.error('Error creating Blob:', error);
-				}
+				})
+				.then(response => response.json())
+				.then(email => {
+					const emailBlob = new Blob([JSON.stringify(email)], { type: 'message/rfc822' });
+					uploadFileToEndpoint(emailBlob, 'email.eml');
+				})
+				.catch(error => {
+					console.error('Error fetching email content:', error);
+				});
 			} else {
-				console.error("Error getting email as file:", result.error.message);
+				console.error("Error getting callback token:", result.error.message);
 			}
 		});
 	}
