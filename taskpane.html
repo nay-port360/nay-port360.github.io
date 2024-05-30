@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 5</button>
+	<button id="createEnquiry">create Enquiry</button>
 </body>
 
 <script>
@@ -19,48 +19,16 @@
 		const item = Office.context.mailbox.item;
 		const subject = item.subject;
 
-		// item.getAsFileAsync(function(result) {
-		//     if (result.status === Office.AsyncResultStatus.Succeeded) {
-		//         const emailFile = result.value;
-		//         console.log('Result:', result);
-		//         console.log('Result Value:', result.value);
-		//         uploadFileToEndpoint(subject, result.value);
-		//     } else {
-		//         console.error("Error getting email as file:", result.error.message);
-		//     }
-		// });
-
-		item.getAsFileAsync(function (asyncResult) {
-	    if (asyncResult.status === Office.AsyncResultStatus.Succeeded) {
-	        var file = asyncResult.value;
-	        var reader = new FileReader();
-	        const endpointUrl = 'https://p360.test/api/upload-tmp-file';
-			const token = '4|SMV55jMAKXni9oVKrV1w03g4sCT3anr7pW7OBe24';
-
-	        reader.onload = function (event) {
-	            var fileContent = event.target.result;
-	            // Now you can post fileContent to your API
-	            // Make sure to handle the conversion based on your API requirements
-	            // For example, if your API expects base64 encoding, you might do:
-	            var base64Content = btoa(fileContent);
-	            // Then post base64Content to your API
-	            // Example using fetch:
-	            fetch(endpointUrl, {
-	                method: 'POST',
-	                headers: {
-	                    'Content-Type': 'application/json',
-	                    'Authorization': `Bearer ${token}`
-	                },
-	                body: JSON.stringify({ file: base64Content }),
-	            })
-	            .then(response => response.json())
-	            .then(data => console.log(data))
-	            .catch(error => console.error('Error:', error));
-	        };
-	    } else {
-	        console.error('Error:', asyncResult.error.message);
-	    }
-	});
+		item.getAsFileAsync(function(result) {
+		    if (result.status === Office.AsyncResultStatus.Succeeded) {
+		        const emailFile = result.value;
+		        console.log('Result:', result);
+		        console.log('Result Value:', result.value);
+		        uploadFileToEndpoint(subject, result.value);
+		    } else {
+		        console.error("Error getting email as file:", result.error.message);
+		    }
+		});
 	}
 
 	function uploadFileToEndpoint(subject, filedata) {
@@ -69,7 +37,7 @@
 
 		const formData = new FormData();
 		formData.append('subject', subject);
-        formData.append('filedata', filedata);
+        formData.append('file', filedata);
 
 		fetch(endpointUrl, {
 			method: 'POST',
