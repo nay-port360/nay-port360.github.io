@@ -96,7 +96,7 @@
 
     function testingApi() {
         const url = "https://p360.test/api/upload-tmp-file";
-        const token = "1|kbGb8dscgSHVKOjSVtnmgHaXhwsffjQiUTfYHj1k";
+        const token = "4|SMV55jMAKXni9oVKrV1w03g4sCT3anr7pW7OBe24";
 
         const item = Office.context.mailbox.item;
         const subject = item.subject;
@@ -112,7 +112,7 @@
 
                     // Prepare form data
                     const formData = new FormData();
-                    formData.append('file', new Blob([file.content], { type: file.format }), `${subject}.eml`);
+                    //formData.append('file', new Blob([file.content], { type: file.format }), `${subject}.eml`);
                     //formData.append('file', blob, `${subject}.eml`);
                     formData.append('receivedDate', receivedDate);
 
