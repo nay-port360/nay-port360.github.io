@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 7</button>
+	<button id="createEnquiry">create Enquiry 8</button>
 </body>
 
 <script>
@@ -52,8 +52,7 @@
 		item.getAsFileAsync(function (result) {
 		    if (result.status === Office.AsyncResultStatus.Succeeded) {
 				const emailFile = result.value;
-				readFileContent(emailFile, function(content) {
-					const blob = new Blob([content], { type: 'application/vnd.ms-outlook' });
+				readAsBlob(emailFile, function(blob) {
 					uploadFileToEndpoint(blob, 'email.msg');
 				});
 		    } else {
@@ -62,23 +61,30 @@
 	  	});
 	}
 
-	function readFileContent(file, callback) {
-		const reader = new FileReader();
-		reader.onload = function(event) {
-			callback(event.target.result);
-		};
-		reader.onerror = function(error) {
-			console.error("Error reading file content:", error);
-		};
+	function readAsBlob(file, callback) {
+  const chunkSize = file.sliceSize;
+  let totalSlices = Math.ceil(file.size / chunkSize);
+  let slices = [];
 
-		file.getSliceAsync(0, file.size, function(result) {
-			if (result.status === Office.AsyncResultStatus.Succeeded) {
-			  	reader.readAsArrayBuffer(result.value.data);
-			} else {
-			  	console.error("Error getting file slice:", result.error.message);
-			}
-		});
-	}
+  function getNextSlice(sliceIndex) {
+    if (sliceIndex >= totalSlices) {
+      const blob = new Blob(slices, { type: 'application/vnd.ms-outlook' });
+      callback(blob);
+      return;
+    }
+
+    file.getSliceAsync(sliceIndex, function(result) {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        slices.push(result.value.data);
+        getNextSlice(sliceIndex + 1);
+      } else {
+        console.error("Error getting file slice:", result.error.message);
+      }
+    });
+  }
+
+  getNextSlice(0);
+}
 
 	function uploadFileToEndpoint(file, filename) {
 		const endpointUrl = 'https://p360.test/api/upload-tmp-file';
