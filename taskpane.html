@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 3</button>
+	<button id="createEnquiry">create Enquiry 4</button>
 </body>
 
 <script>
@@ -40,19 +40,27 @@
 		item.getAsFileAsync(function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
 				const emailFile = result.value;
-				uploadFileToEndpoint(emailFile);
+				const reader = new FileReader();
+
+				reader.onload = function () {
+					const arrayBuffer = reader.result;
+					const blob = new Blob([arrayBuffer], { type: 'application/vnd.ms-outlook' });
+					uploadFileToEndpoint(blob, 'email.msg');
+				};
+
+				reader.readAsArrayBuffer(emailFile);
 			} else {
 				console.error("Error getting email as file:", result.error.message);
 			}
 		});
 	}
 
-	function uploadFileToEndpoint(file) {
+	function uploadFileToEndpoint(file, filename) {
 		const endpointUrl = 'https://p360.test/api/upload-tmp-file';
 		const token = '4|SMV55jMAKXni9oVKrV1w03g4sCT3anr7pW7OBe24';
 
 		const formData = new FormData();
-		formData.append('file', file, 'email.msg');
+		formData.append('file', file, filename);
 
 		fetch(endpointUrl, {
 			method: 'POST',
