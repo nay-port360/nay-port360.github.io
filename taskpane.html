@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 2</button>
+	<button id="createEnquiry">create Enquiry 3</button>
 </body>
 
 <script>
@@ -37,7 +37,7 @@
 		// 	}
 		// });
 
-		item.getAsFileAsync(Office.CoercionType.File, function (result) {
+		item.getAsFileAsync(function (result) {
 			if (result.status === Office.AsyncResultStatus.Succeeded) {
 				const emailFile = result.value;
 				uploadFileToEndpoint(emailFile);
