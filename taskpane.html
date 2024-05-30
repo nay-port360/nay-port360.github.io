@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 1</button>
+	<button id="createEnquiry">create Enquiry 2</button>
 </body>
 
 <script>
@@ -18,28 +18,14 @@
     function createEnquiry() {
 		const item = Office.context.mailbox.item;
 
-		item.getCallbackTokenAsync({ isRest: true }, function (result) {
-			if (result.status === Office.AsyncResultStatus.Succeeded) {
-				const token = result.value;
-				const itemId = item.itemId;
-
-				fetch(`https://outlook.office.com/api/v2.0/me/messages/${itemId}`, {
-					headers: {
-						'Authorization': `Bearer ${token}`,
-						'Accept': 'application/json; odata.metadata=none'
-					}
-				})
-				.then(response => response.json())
-				.then(email => {
-					const emailBlob = new Blob([JSON.stringify(email)], { type: 'message/rfc822' });
-					uploadFileToEndpoint(emailBlob, 'email.eml');
-				})
-				.catch(error => {
-					console.error('Error fetching email content:', error);
-				});
-			} else {
-				console.error("Error getting callback token:", result.error.message);
-			}
+		item.getAsFileAsync(function(result) {
+		    if (result.status === Office.AsyncResultStatus.Succeeded) {
+		        const emailFile = result.value;
+		        console.log('Result:', result);
+		        console.log('Result Value:', result.value);
+		    } else {
+		        console.error("Error getting email as file:", result.error.message);
+		    }
 		});
 	}
 
