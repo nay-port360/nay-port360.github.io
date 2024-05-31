@@ -6,7 +6,7 @@
 </head>
 <body>
 	<div id="result" style="padding:10px;margin-bottom:30px;min-height:100px;"></div>
-	<button id="createEnquiry" style="margin: auto;">create Enquiry 5</button>
+	<button id="createEnquiry" style="margin: auto;">create Enquiry 6</button>
 </body>
 
 <script>
@@ -20,6 +20,8 @@
 		const item = Office.context.mailbox.item;
 		const subject = item.subject;
 		const receivedDate = item.dateTimeCreated;
+
+		console.log(receivedDate);
 
 		if (Office.context.requirements.isSetSupported("Mailbox", "1.14")) {
 			document.getElementById("result").innerHTML = "Congrats! your outlook version is supported.";
