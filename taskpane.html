@@ -20,8 +20,10 @@
 		const subject = item.subject;
 
 		if (Office.context.requirements.isSetSupported("Mailbox", "1.14")) {
+			alert('Congrats! your outlook version is supported');
 			console.log("Support Mailbox 1.14");
 		} else {
+			alert('Sorry your outlook version is not supported');
 			console.log("Not Support Mailbox 1.14");
 		}
 
