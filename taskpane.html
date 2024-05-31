@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry</button>
+	<button id="createEnquiry">create Enquiry 1</button>
 </body>
 
 <script>
@@ -19,16 +19,22 @@
 		const item = Office.context.mailbox.item;
 		const subject = item.subject;
 
-		item.getAsFileAsync(function(result) {
-		    if (result.status === Office.AsyncResultStatus.Succeeded) {
-		        const emailFile = result.value;
-		        console.log('Result:', result);
-		        console.log('Result Value:', result.value);
-		        uploadFileToEndpoint(subject, result.value);
-		    } else {
-		        console.error("Error getting email as file:", result.error.message);
-		    }
-		});
+		if (Office.context.requirements.isSetSupported("Mailbox", "1.14")) {
+			console.log("Support Mailbox 1.14");
+		} else {
+			console.log("Not Support Mailbox 1.14");
+		}
+
+		// item.getAsFileAsync(function(result) {
+		//     if (result.status === Office.AsyncResultStatus.Succeeded) {
+		//         const emailFile = result.value;
+		//         console.log('Result:', result);
+		//         console.log('Result Value:', result.value);
+		//         uploadFileToEndpoint(subject, result.value);
+		//     } else {
+		//         console.error("Error getting email as file:", result.error.message);
+		//     }
+		// });
 	}
 
 	function uploadFileToEndpoint(subject, filedata) {
