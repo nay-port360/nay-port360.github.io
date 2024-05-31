@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-	<button id="createEnquiry">create Enquiry 2</button>
+	<button id="createEnquiry">create Enquiry 3</button>
 	<div id="result" style="padding:10px;background-color:#f9f9f9;">
 		Testing Result
 	</div>
@@ -23,10 +23,10 @@
 		const subject = item.subject;
 
 		if (Office.context.requirements.isSetSupported("Mailbox", "1.14")) {
-			alert('Congrats! your outlook version is supported');
+			document.getElementById("result").innerHTML = "Congrats! your outlook version is supported.";
 			console.log("Support Mailbox 1.14");
 		} else {
-			alert('Sorry your outlook version is not supported');
+			document.getElementById("result").innerHTML = "Sorry your outlook version is not supported. Please update your outlook.";
 			console.log("Not Support Mailbox 1.14");
 		}
 
