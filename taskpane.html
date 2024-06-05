@@ -6,7 +6,7 @@
 </head>
 <body>
 	<div id="result" style="padding:10px;margin-bottom:30px;min-height:100px;"></div>
-	<button id="createEnquiry" style="margin: auto;">create Enquiry 6</button>
+	<button id="createEnquiry" style="margin: auto;">Create Enquiry</button>
 </body>
 
 <script>
@@ -20,8 +20,7 @@
 		const item = Office.context.mailbox.item;
 		const subject = item.subject;
 		const receivedDate = item.dateTimeCreated;
-
-		console.log(receivedDate);
+		const from_email = item.from.emailAddress;
 
 		if (Office.context.requirements.isSetSupported("Mailbox", "1.14")) {
 			document.getElementById("result").innerHTML = "Congrats! your outlook version is supported.";
@@ -36,18 +35,19 @@
 		        const emailFile = result.value;
 		        console.log('Result:', result);
 		        console.log('Result Value:', result.value);
-		        uploadFileToEndpoint(receivedDate, result.value);
+		        uploadFileToEndpoint(from_email, receivedDate, result.value);
 		    } else {
 		        console.error("Error getting email as file:", result.error.message);
 		    }
 		});
 	}
 
-	function uploadFileToEndpoint(receivedDate, filedata) {
+	function uploadFileToEndpoint(from_email, receivedDate, filedata) {
 		const endpointUrl = 'https://p360.test/api/upload-tmp-file';
 		const token = '4|SMV55jMAKXni9oVKrV1w03g4sCT3anr7pW7OBe24';
 
 		const formData = new FormData();
+		formData.append('from_email', from_email);
 		formData.append('received_date', receivedDate);
         formData.append('file', filedata);
 
